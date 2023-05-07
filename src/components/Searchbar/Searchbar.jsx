@@ -10,9 +10,9 @@ import {
   LabelBtn,
   Input,
   FormsSt,
-} from './SearchBar.styled';
+} from './Searchbar.styled';
 
-export const SearchBar = ({ onSubmit }) => {
+export const Searchbar = ({ onSubmit }) => {
   const handleSubmit = ({ text }, actions) => {
     if (text.trim() === '') {
       errorEmptyInput();
@@ -45,6 +45,6 @@ export const SearchBar = ({ onSubmit }) => {
   );
 };
 
-SearchBar.propTypes = {
+Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };

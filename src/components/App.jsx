@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 
 import { fetchImage } from './Api/api';
-import { SearchBar } from './SearchBar/SearchBar';
+import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { LoadMoreBtn } from './Button/Button';
 import { Loader } from './Loader/Loader';
@@ -15,15 +15,17 @@ import { ErrorData } from './Error/ErrorData/ErrorData';
 import { Container } from './App.styled';
 
 export function App() {
+  const [search, setSearch] = useState('');
   const [images, setImages] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  const [search, setSearch] = useState('');
+  const [error, setError] = useState(null);
+
+  const [btnVision, setBtnVision] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [modalImg, setModalImg] = useState(null);
-  const [btnVision, setBtnVision] = useState(true);
-  const [error, setError] = useState(null);
-  const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
 
   useEffect(() => {
     if (!search) {
@@ -90,7 +92,7 @@ export function App() {
   return (
     <>
       <Container>
-        <SearchBar onSubmit={acceptSearch} />
+        <Searchbar onSubmit={acceptSearch} />
         {isLoading && <Loader />}
 
         {error && error}

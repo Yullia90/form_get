@@ -14,5 +14,6 @@ export const fetchImage = async (search, pageNum) => {
       orientation: 'horizontal',
     },
   });
+
   return response.data;
 };
