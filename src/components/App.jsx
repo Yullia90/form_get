@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 
 import { fetchImage } from './Api/api';
-import { Searchbar } from './Searchbar/Searchbar';
+import { SearchBar } from './SearchBar/SearchBar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { LoadMoreBtn } from './Button/Button';
 import { Loader } from './Loader/Loader';
@@ -15,8 +15,8 @@ import { ErrorData } from './Error/ErrorData/ErrorData';
 import { Container } from './App.styled';
 
 export function App() {
-  const [images, setImages] = useState[null];
-  const [pageNum, setPageNum] = useState[2];
+  const [images, setImages] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -25,80 +25,79 @@ export function App() {
   const [error, setError] = useState(null);
   const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
 
-  const acceptSearch = async search => {
-    if (this.state.search === search || search === '') {
+  useEffect(() => {
+    if (!search) {
       return;
     }
 
-    try {
-      this.setState({ images: null });
-      this.setState({ isLoading: true });
-      this.setState({ search: search });
-      this.setState({ pageNum: 2 });
-      this.setState({ btnVision: true });
+    const fetchData = async () => {
+      try {
+        setIsLoadingSpinner(true);
+        setBtnVision(true);
 
-      const response = await fetchImage(search);
-      this.setState({ images: response.hits });
+        if (pageNum === 1) {
+          setIsLoading(true);
+        }
 
-      if (response.total === 0) {
-        this.setState({ error: errorMassage(search) });
+        const response = await fetchImage(search, pageNum);
+
+        setImages(prevImage => [...prevImage, ...response.hits]);
+
+        if (response.total === 0) {
+          setError(errorMassage(search));
+        }
+        if (response.hits.length < 1) {
+          setBtnVision(false);
+          Report.info(
+            "That's all",
+            "We're sorry, but you've reached the end of search results.",
+            'Okay'
+          );
+          return;
+        }
+      } catch {
+        setError(ErrorData());
+      } finally {
+        setIsLoading(false);
+        setIsLoadingSpinner(false);
       }
-    } catch {
-      this.setState({ error: ErrorData() });
-    } finally {
-      this.setState({ isLoading: false });
+    };
+
+    fetchData();
+  }, [pageNum, search]);
+
+  const acceptSearch = queryImg => {
+    if (queryImg === search) {
+      return;
     }
+    setImages([]);
+    setPageNum(1);
+    setSearch(queryImg);
   };
 
-  const onClickPageUp = async () => {
-    try {
-      this.setState({ isLoadingSpinner: true });
-      const { pageNum, search } = this.state;
-      this.setState(prevState => {
-        return { pageNum: prevState.pageNum + 1 };
-      });
-      const response = await fetchImage(search, pageNum);
-
-      const nextPictures = response.hits;
-      if (nextPictures.length < 1) {
-        this.setState({ btnVision: false });
-        Report.info(
-          "That's all",
-          "We're sorry, but you've reached the end of search results.",
-          'Okay'
-        );
-        return;
-      }
-      this.setState(prevState => ({
-        images: [...prevState.images, ...nextPictures],
-      }));
-    } catch {
-      this.setState({ error: ErrorData() });
-    } finally {
-      this.setState({ isLoading: false });
-      this.setState({ isLoadingSpinner: false });
-    }
+  const onClickPageUp = () => {
+    setPageNum(pageNum + 1);
   };
 
   const toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
+    setShowModal(prevShowModal => (prevShowModal = !showModal));
   };
 
   const updateModalPicture = img => {
-    this.setState({ modalImg: img });
+    setModalImg(img);
   };
 
   return (
     <>
       <Container>
-        <Searchbar onSubmit={acceptSearch} />
+        <SearchBar onSubmit={acceptSearch} />
         {isLoading && <Loader />}
 
         {error && error}
 
         {images && (
           <ImageGallery
-            images={images}
+            items={images}
             onClick={toggleModal}
             onUpdateModalPicture={updateModalPicture}
           />

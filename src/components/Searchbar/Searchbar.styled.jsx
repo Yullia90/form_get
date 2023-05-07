@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Form, Field } from 'formik';
 
-export const ConteinerBar = styled.header`
+export const ContainerBar = styled.header`
   margin: 0 auto;
   margin-top: 20px;
   padding: 20px;
