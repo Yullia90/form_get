@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 
 import { fetchImage } from './Api/api';
@@ -14,20 +14,18 @@ import { ErrorData } from './Error/ErrorData/ErrorData';
 
 import { Container } from './App.styled';
 
-export class App extends Component {
-  state = {
-    images: null,
-    pageNum: 2,
-    search: '',
-    isLoading: false,
-    showModal: false,
-    modalImg: null,
-    btnVision: true,
-    error: null,
-    isLoadingSpinner: false,
-  };
+export function App() {
+  const [images, setImages] = useState[null];
+  const [pageNum, setPageNum] = useState[2];
+  const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalImg, setModalImg] = useState(null);
+  const [btnVision, setBtnVision] = useState(true);
+  const [error, setError] = useState(null);
+  const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
 
-  acceptSearch = async search => {
+  const acceptSearch = async search => {
     if (this.state.search === search || search === '') {
       return;
     }
@@ -52,7 +50,7 @@ export class App extends Component {
     }
   };
 
-  onClickPageUp = async () => {
+  const onClickPageUp = async () => {
     try {
       this.setState({ isLoadingSpinner: true });
       const { pageNum, search } = this.state;
@@ -82,54 +80,40 @@ export class App extends Component {
     }
   };
 
-  toggleModal = () => {
+  const toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
-  updateModalPicture = img => {
+  const updateModalPicture = img => {
     this.setState({ modalImg: img });
   };
 
-  render() {
-    const {
-      images,
-      isLoading,
-      showModal,
-      modalImg,
-      error,
-      btnVision,
-      isLoadingSpinner,
-    } = this.state;
+  return (
+    <>
+      <Container>
+        <Searchbar onSubmit={acceptSearch} />
+        {isLoading && <Loader />}
 
-    return (
-      <>
-        <Container>
-          <Searchbar onSubmit={this.acceptSearch} />
-          {isLoading && <Loader />}
+        {error && error}
 
-          {error && error}
-
-          {images && (
-            <ImageGallery
-              images={images}
-              onClick={this.toggleModal}
-              onUpdateModalPicture={this.updateModalPicture}
+        {images && (
+          <ImageGallery
+            images={images}
+            onClick={toggleModal}
+            onUpdateModalPicture={updateModalPicture}
+          />
+        )}
+        {images && images.length > 0 && btnVision && (
+          <>
+            <LoadMoreBtn
+              onLoadMore={onClickPageUp}
+              isLoadingSpin={isLoadingSpinner}
             />
-          )}
-          {images && images.length > 0 && btnVision && (
-            <>
-              <LoadMoreBtn
-                onLoadMore={this.onClickPageUp}
-                isLoadingSpin={isLoadingSpinner}
-              />
-            </>
-          )}
+          </>
+        )}
 
-          {showModal && (
-            <Modal onClose={this.toggleModal} onGiveImg={modalImg} />
-          )}
-        </Container>
-      </>
-    );
-  }
+        {showModal && <Modal onClose={toggleModal} onGiveImg={modalImg} />}
+      </Container>
+    </>
+  );
 }
