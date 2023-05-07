@@ -4,13 +4,13 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
 import { Gallery } from './ImageGallery.styled';
 
-export const ImageGallery = ({ images, onClick, onUpdateModalPicture }) => {
+export const ImageGallery = ({ items, onClick, onUpdateModalPicture }) => {
   return (
     <Gallery>
-      {images.map(image => (
+      {items.map(item => (
         <ImageGalleryItem
-          key={image.id}
-          images={image}
+          key={item.id}
+          images={item}
           onClick={onClick}
           onGiveImg={onUpdateModalPicture}
         />
@@ -20,7 +20,7 @@ export const ImageGallery = ({ images, onClick, onUpdateModalPicture }) => {
 };
 
 ImageGallery.propTypes = {
-  images: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
   onUpdateModalPicture: PropTypes.func.isRequired,
 };
