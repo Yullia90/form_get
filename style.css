@@ -75,7 +75,7 @@ padding: 30px 0;
     margin: 0px 0px 20px 0px;
 }
 .form_label{
-    font-size: 50px;
+    font-size: 25px;
     display: block;
     margin: 0px 0px 10px 0px;
 }
@@ -115,7 +115,7 @@ transform: scale(1);
 .options_label{
     display: inline-flex;
     font-size: 16px;
-    line-height: 140px;
+    /* line-height: 140px;  */
     align-items: center;
     position: relative;
     cursor: pointer;
@@ -140,7 +140,7 @@ transform: scale(1);
     height: 16px;
     background-color: #7a956b;
     border-radius: 50%;
-    transform: scale(1);
+    transform: scale(0);
 }
 .select{
     height: 50px;
@@ -224,7 +224,7 @@ transform: scale(1);
     left: 4px;
     background-color: #7a956b;
     border-radius: 4px;
-    transform: scale(1);
+    transform: scale(0);
 }
 .checkbox_label a{
     color: #7a956b;
